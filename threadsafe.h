@@ -5,7 +5,7 @@
 #include <QSharedPointer>
 
 /*
- О читатель! Мы тебе сочувствуем.
+ Рћ С‡РёС‚Р°С‚РµР»СЊ! РњС‹ С‚РµР±Рµ СЃРѕС‡СѓРІСЃС‚РІСѓРµРј.
  */
 
 template <class T> class ThreadSafe;
