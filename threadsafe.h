@@ -17,7 +17,6 @@ public:
 
 	ThreadLock<T>& operator = (const ThreadLock<T>& lock);
 	T* operator -> ();
-	// operator T* ();
 
 	~ThreadLock();
 private:
@@ -46,13 +45,8 @@ ThreadLock<T>& ThreadLock<T>::operator= (const ThreadLock<T>& lock) {
 
 template <class T>
 T* ThreadLock<T>::operator ->() {
-	return object->object;
+	return object->object.data();
 }
-
-/*template <class T>
-ThreadLock<T>::operator T*() {
-	return object->object;
-}*/
 
 template <class T>
 ThreadLock<T>::~ThreadLock() {
@@ -70,22 +64,15 @@ public:
 	ThreadSafe<T>& operator = (const ThreadSafe<T>& safe);
 
 	ThreadLock<T> lock();
-
-	~ThreadSafe();
 private:
-	T* object;
+	QSharedPointer<T> object;
 
 	QSharedPointer<QMutex> mutex;
 };
 
 template <class T>
-ThreadSafe<T>::~ThreadSafe() {
-	delete object;
-}
-
-template <class T>
-ThreadSafe<T>::ThreadSafe(): mutex(new QMutex(QMutex::Recursive)) {
-	object = new T;
+ThreadSafe<T>::ThreadSafe()
+	: mutex(new QMutex(QMutex::Recursive)), object(new T) {
 }
 
 template <class T>
@@ -93,12 +80,15 @@ ThreadSafe<T>::ThreadSafe(T* object)
 	: mutex(new QMutex(QMutex::Recursive)), object(object) {}
 
 template <class T>
-ThreadSafe<T>::ThreadSafe(const ThreadSafe<T> &safe): mutex(safe.mutex) {}
+ThreadSafe<T>::ThreadSafe(const ThreadSafe<T> &safe)
+	: mutex(safe.mutex), object(safe.object) {}
 
 template <class T>
 ThreadSafe<T>& ThreadSafe<T>::operator = (const ThreadSafe<T>& safe) {
 	object = safe.object;
 	mutex = safe.mutex;
+
+	return *this;
 }
 
 template <class T>
